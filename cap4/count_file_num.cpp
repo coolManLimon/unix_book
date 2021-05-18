@@ -43,16 +43,20 @@ int myFtw(std::string pathName)
     DIR             *dp = NULL;
     int             ret = 0;
 
-    if (lstat(pathName.c_str(), &stat_buf))
+    if (lstat(pathName.c_str(), &stat_buf) < 0)
     {
-        std::cout << "lstat error!" << std::endl;
+        std::cout << pathName << "   lstat error!" << std::endl;
+        return 0;
     }
     if (S_ISDIR(stat_buf.st_mode) == 0)     // 是文件而非目录
     {
+        std::cout << "   is file" << std::endl;
         doIt(pathName, F_FILE, &stat_buf);
+        return 0;
     }
 
     // 目录
+    std::cout << pathName << "   is dir" << std::endl;
     doIt(pathName, F_DIR, &stat_buf);
     if ((dp = opendir(pathName.c_str())) != NULL)
     {
@@ -66,12 +70,15 @@ int myFtw(std::string pathName)
             {
                 std::string tmp = pathName.append("/").append(dir->d_name);
                 myFtw(tmp);
+                std::cout << "cccccccccccc" << std::endl;
+                return 1;
             }
         }
+        std::cout << "zzzzzzzzzzzzzzz" << std::endl;
         return 1;
-        
     }
-
+    std::cout << "ppppppppp" << std::endl;
+    return 1;
 }
 
 int main(int argc, char **argv)
